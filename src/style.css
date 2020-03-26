@@ -1,0 +1,26 @@
+.board {
+    margin: auto;
+    background-color: #fb2328;
+    overflow: hidden;
+    outline: none;
+
+}
+
+.cell, .body-cell, .food-cell {
+    width: 30px;
+    height: 30px;
+    float: left;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.body-cell {
+
+    background-color: #20ff35;
+    border-radius: 25px 25px 0 0 ;
+}
+
+.food-cell {
+    background-color: #6700ff;
+    border-radius: 50px;
+}
