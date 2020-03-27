@@ -3,15 +3,17 @@
     background-color: #fb2328;
     overflow: hidden;
     outline: none;
-
 }
 
 .cell, .body-cell, .food-cell {
+    box-sizing: border-box;
     width: 30px;
     height: 30px;
     float: left;
-    overflow: hidden;
-    box-sizing: border-box;
+}
+
+.cell{
+    border: 1px solid black;
 }
 
 .body-cell {

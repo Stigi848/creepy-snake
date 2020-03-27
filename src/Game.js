@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Cells from "./Cells";
-import {START, BODY, FOOD, KEYS, COLS, ROWS, DIRS} from './const';
+import {START, BODY, FOOD, KEYS, COLS, ROWS} from './const';
 import './style.css';
 
 class Game extends Component {
@@ -12,9 +12,9 @@ class Game extends Component {
             direction: null,
             gameOver: false
         };
-        this.frame = this.frame.bind(this);
+        this.setting = this.setting.bind(this);
         this.start = this.start.bind(this);
-        this.handleKey = this.handleKey.bind(this);
+        this.move = this.move.bind(this);
     }
 
     componentDidMount() {
@@ -24,44 +24,45 @@ class Game extends Component {
     start() {
         const board = [];
         board[START] = BODY;
-
         const snake = [START];
         this.setState({
             board,
             snake,
-            direction: KEYS.right
+            direction: KEYS.left
         }, () => {
-            this.frame();
+            this.setting();
         });
     }
 
 
-    frame() {
+    setting() {
         let {snake, board, direction} = this.state;
 
-        const head = this.getNextIndex(snake[0], direction);
+        const head = this.Snakemove(snake[0], direction);
+
+
+
         const food = board[head] === FOOD ||
             snake.length === 1;
 
 
         if (snake.indexOf(head) !== -1) {
             this.setState({gameOver: true});
-
             return;
         }
 
         if (food) {
-            const maxCells = ROWS * COLS;
+            const allCells = ROWS * COLS;
 
             let i;
            do  {
-                i = Math.floor(Math.random() * maxCells);
+                i = Math.floor(Math.random() * allCells);
             }
             while (board[i]);
             board[i] = FOOD;
         } else {
 
-            board[snake.pop()] = null;
+            board[snake.pop()]=null;
         }
 
         board[head] = BODY;
@@ -77,43 +78,46 @@ class Game extends Component {
             snake,
             direction
         }, () => {
-            setTimeout(this.frame, 200)
+            setTimeout(this.setting, 200)
         })
     }
 
 
-    handleKey = (event) => {
+    move = (event) => {
         const direction = event.nativeEvent.keyCode;
 
-        const diff = Math.abs(this.state.direction - direction);
+        const reverseMove = Math.abs(this.state.direction - direction);
 
-        if (DIRS[direction] && diff !== 0 && diff !== 2) {
+        if (reverseMove !== 0 && reverseMove !== 2) {
             this.nextDirection = direction;
         }
     };
 
-    getNextIndex(head, direction) {
-        let x = head % COLS;
+    Snakemove(head, direction) {
+        let x = head % ROWS;
         let y = Math.floor(head / COLS);
-        console.log(x, y);
+        // console.log(x, y);
+        console.log(head);
+
 
         switch (direction) {
             case KEYS.up:
-                y = y <= 0 ? ROWS - 1 : y - 1;
+                y = y <= 0 ? COLS : y - 1;
                 break;
             case KEYS.down:
-                y = y >= ROWS ? 0 : y + 1;
+                y = y >= COLS ? 0 : y + 1;
                 break;
             case KEYS.left:
-                x = x <= 0 ? COLS - 1 : x - 1;
+                x = x <= 0 ? ROWS - 1 : x - 1;
                 break;
             case KEYS.right:
-                x = x >= COLS - 1 ? 0 : x + 1;
+                x = x >= ROWS - 1 ? 0 : x + 1;
                 break;
             default:
                 return;
         }
         return (COLS * y) + x;
+    //    klucz pozycja jak w Cells
     }
 
 
@@ -121,7 +125,7 @@ class Game extends Component {
         const {board} = this.state;
         return (
             <Cells
-                handleKey={this.handleKey}
+                move={this.move}
                 board={board}
             />
         )
